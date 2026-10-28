@@ -1,44 +1,21 @@
 {
   "name": "envguard-lite",
   "version": "0.1.0",
-  "description": "A lightweight, zero-dependency environment variable loading and parsing library for Node.js applications.",
+  "description": "A lightweight, beginner-friendly Node.js utility package for validating environment variables and providing clear configuration errors.",
   "type": "module",
-  "main": "./src/index.js",
   "exports": {
-    ".": "./src/index.js",
+    "import": "./src/index.js",
     "./package.json": "./package.json"
   },
-  "files": [
-    "src",
-    "README.md",
-    "LICENSE"
-  ],
-  "engines": {
-    "node": ">=18.0.0"
-  },
+  "main": "./src/index.js",
   "scripts": {
-    "test": "node --test test/**/*.test.js",
-    "test:watch": "node --test --watch test/**/*.test.js"
+    "test": "node --test"
   },
-  "keywords": [
-    "env",
-    "dotenv",
-    "environment",
-    "environment-variables",
-    "config",
-    "parser",
-    "loader",
-    "zero-dependency",
-    "esm"
-  ],
-  "author": "Sneha Viradiya",
+  "keywords": ["env", "environment", "variables", "validation"],
+  "files": ["src/**/*.js", "package.json"],
+  "author": "",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/snehaviradiya/envguard-lite.git"
-  },
-  "bugs": {
-    "url": "https://github.com/snehaviradiya/envguard-lite/issues"
-  },
-  "homepage": "https://github.com/snehaviradiya/envguard-lite#readme"
+  "engines": {
+    "node": ">=18"
+  }
 }
