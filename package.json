@@ -1,0 +1,44 @@
+{
+  "name": "envguard-lite",
+  "version": "0.1.0",
+  "description": "A lightweight, zero-dependency environment variable loading and parsing library for Node.js applications.",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "test": "node --test test/**/*.test.js",
+    "test:watch": "node --test --watch test/**/*.test.js"
+  },
+  "keywords": [
+    "env",
+    "dotenv",
+    "environment",
+    "environment-variables",
+    "config",
+    "parser",
+    "loader",
+    "zero-dependency",
+    "esm"
+  ],
+  "author": "Sneha Viradiya",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snehaviradiya/envguard-lite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/snehaviradiya/envguard-lite/issues"
+  },
+  "homepage": "https://github.com/snehaviradiya/envguard-lite#readme"
+}
