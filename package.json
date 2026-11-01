@@ -4,7 +4,9 @@
   "description": "A lightweight, beginner-friendly Node.js utility package for validating environment variables and providing clear configuration errors.",
   "type": "module",
   "exports": {
-    "import": "./src/index.js",
+    ".": {
+      "import": "./src/index.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./src/index.js",
