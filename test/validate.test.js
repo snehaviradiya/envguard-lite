@@ -83,6 +83,28 @@ test('validateEnv: default respects enum and pattern', () => {
   assert.equal(cfg.TAG, 'v1');
 });
 
+test('validateEnv: invalid defaults fail enum, pattern, and type validation', () => {
+  assert.throws(
+    () => validateEnv({ MODE: { type: 'string', enum: ['dev'], default: 'staging' } }, {}),
+    (err) => err instanceof ValidationError && err.message.includes('must be one of')
+  );
+
+  assert.throws(
+    () => validateEnv({ TAG: { type: 'string', pattern: /^v\d+$/, default: 'latest' } }, {}),
+    (err) => err instanceof ValidationError && err.message.includes('does not match required pattern')
+  );
+
+  assert.throws(
+    () => validateEnv({ PORT: { type: 'number', default: '3000' } }, {}),
+    (err) => err instanceof ValidationError && err.message.includes('must be a number')
+  );
+
+  assert.throws(
+    () => validateEnv({ PORT: { type: 'unsupported', default: '3000' } }, {}),
+    (err) => err instanceof ValidationError && err.message.includes('Unsupported type')
+  );
+});
+
 function makeEnv(vars) {
   return { ...vars };
 }

@@ -6,12 +6,12 @@
 export { parse } from './parser.js';
 export { load, config } from './loader.js';
 export { EnvGuardError, ParseError, LoadError } from './errors.js';
-export { validateEnv } from './validate.js';
+export { validateEnv, ValidationError } from './validate.js';
 
 import { parse } from './parser.js';
 import { load, config } from './loader.js';
 import { EnvGuardError, ParseError, LoadError } from './errors.js';
-import { validateEnv } from './validate.js';
+import { validateEnv, ValidationError } from './validate.js';
 
 export default {
   parse,
@@ -20,5 +20,6 @@ export default {
   EnvGuardError,
   ParseError,
   LoadError,
-  validateEnv
+  validateEnv,
+  ValidationError
 };

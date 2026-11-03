@@ -33,56 +33,76 @@ export function validateEnv(schema, env = process.env) {
     const isMissing = raw === undefined || raw === null || raw === '';
     const { type, required = false, default: defValue, enum: allowed, pattern } = def;
 
-    if (isMissing) {
-      if (required && defValue === undefined) {
-        errors.push(`Missing required environment variable: ${key}`);
-        continue;
-      }
-      if (defValue !== undefined) {
-        result[key] = defValue;
-      }
+    if (!['string', 'number', 'boolean', 'url'].includes(type)) {
+      errors.push(`Unsupported type '${type}' for variable ${key}`);
+      continue;
+    }
+
+    if (isMissing && required && defValue === undefined) {
+      errors.push(`Missing required environment variable: ${key}`);
+      continue;
+    }
+    if (isMissing && defValue === undefined) {
       continue;
     }
 
     let parsed;
-    try {
-      switch (type) {
-        case 'string':
-          parsed = String(raw);
-          break;
-        case 'number': {
-          const num = Number(raw);
-          if (Number.isNaN(num)) {
-            throw new ValidationError(`Environment variable ${key} must be a valid number, got '${raw}'`);
-          }
-          parsed = num;
-          break;
-        }
-        case 'boolean': {
-          if (raw === 'true') {
-            parsed = true;
-          } else if (raw === 'false') {
-            parsed = false;
-          } else {
-            throw new ValidationError(`Environment variable ${key} must be 'true' or 'false', got '${raw}'`);
-          }
-          break;
-        }
-        case 'url': {
-          try {
-            new URL(raw);
-            parsed = raw;
-          } catch (_) {
-            throw new ValidationError(`Environment variable ${key} must be a valid URL, got '${raw}'`);
-          }
-          break;
-        }
-        default:
-          throw new ValidationError(`Unsupported type '${type}' for variable ${key}`);
+    if (isMissing) {
+      parsed = defValue;
+      const expectedType = type === 'number' ? 'number' : type === 'boolean' ? 'boolean' : 'string';
+      if (typeof parsed !== expectedType || (type === 'number' && Number.isNaN(parsed))) {
+        errors.push(`Default value for ${key} must be a ${expectedType}`);
+        continue;
       }
-    } catch (e) {
-      errors.push(e instanceof ValidationError ? e.message : e.message);
-      continue;
+
+      if (type === 'url') {
+        try {
+          new URL(parsed);
+        } catch (_) {
+          errors.push(`Default value for ${key} must be a valid URL`);
+          continue;
+        }
+      }
+    } else {
+      try {
+        switch (type) {
+          case 'string':
+            parsed = String(raw);
+            break;
+          case 'number': {
+            const num = Number(raw);
+            if (Number.isNaN(num)) {
+              throw new ValidationError(`Environment variable ${key} must be a valid number, got '${raw}'`);
+            }
+            parsed = num;
+            break;
+          }
+          case 'boolean': {
+            if (raw === 'true') {
+              parsed = true;
+            } else if (raw === 'false') {
+              parsed = false;
+            } else {
+              throw new ValidationError(`Environment variable ${key} must be 'true' or 'false', got '${raw}'`);
+            }
+            break;
+          }
+          case 'url': {
+            try {
+              new URL(raw);
+              parsed = raw;
+            } catch (_) {
+              throw new ValidationError(`Environment variable ${key} must be a valid URL, got '${raw}'`);
+            }
+            break;
+          }
+          default:
+            throw new ValidationError(`Unsupported type '${type}' for variable ${key}`);
+        }
+      } catch (e) {
+        errors.push(e instanceof ValidationError ? e.message : e.message);
+        continue;
+      }
     }
 
     if (Array.isArray(allowed)) {
