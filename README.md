@@ -84,7 +84,7 @@ try {
 - `enum`: an array of allowed values, checked after parsing and for defaults.
 - `pattern`: a regular expression or regex string, checked against the string form of the parsed value and defaults.
 
-Validation errors are aggregated where possible. `ValidationError.messages` contains individual messages, which may include invalid values; avoid logging these messages when environment values may be sensitive. The example handles failures with a generic message instead.
+Validation errors are aggregated where possible. `ValidationError.messages` contains individual messages identifying the variable and issue without echoing supplied environment values. The example handles failures with a generic message as an additional precaution.
 
 ## Integration example
 

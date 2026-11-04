@@ -25,10 +25,19 @@ export class ValidationError extends EnvGuardError {
  * @throws {ValidationError} If required variables are missing or values cannot be parsed.
  */
 export function validateEnv(schema, env = process.env) {
+  if (schema === null || typeof schema !== 'object' || Array.isArray(schema)) {
+    throw new ValidationError('Validation schema must be an object');
+  }
+
   const result = {};
   const errors = [];
 
   for (const [key, def] of Object.entries(schema)) {
+    if (def === null || typeof def !== 'object' || Array.isArray(def)) {
+      errors.push(`Invalid validation rule for variable ${key}`);
+      continue;
+    }
+
     const raw = env[key];
     const isMissing = raw === undefined || raw === null || raw === '';
     const { type, required = false, default: defValue, enum: allowed, pattern } = def;
@@ -72,7 +81,7 @@ export function validateEnv(schema, env = process.env) {
           case 'number': {
             const num = Number(raw);
             if (Number.isNaN(num)) {
-              throw new ValidationError(`Environment variable ${key} must be a valid number, got '${raw}'`);
+              throw new ValidationError(`Environment variable ${key} must be a valid number`);
             }
             parsed = num;
             break;
@@ -83,7 +92,7 @@ export function validateEnv(schema, env = process.env) {
             } else if (raw === 'false') {
               parsed = false;
             } else {
-              throw new ValidationError(`Environment variable ${key} must be 'true' or 'false', got '${raw}'`);
+              throw new ValidationError(`Environment variable ${key} must be 'true' or 'false'`);
             }
             break;
           }
@@ -92,7 +101,7 @@ export function validateEnv(schema, env = process.env) {
               new URL(raw);
               parsed = raw;
             } catch (_) {
-              throw new ValidationError(`Environment variable ${key} must be a valid URL, got '${raw}'`);
+              throw new ValidationError(`Environment variable ${key} must be a valid URL`);
             }
             break;
           }
@@ -107,7 +116,7 @@ export function validateEnv(schema, env = process.env) {
 
     if (Array.isArray(allowed)) {
       if (!allowed.includes(parsed)) {
-        errors.push(`Environment variable ${key} must be one of ${JSON.stringify(allowed)}, got '${parsed}'`);
+        errors.push(`Environment variable ${key} must match one of the configured values`);
         continue;
       }
     }
@@ -121,7 +130,7 @@ export function validateEnv(schema, env = process.env) {
         continue;
       }
       if (!regex.test(String(parsed))) {
-        errors.push(`Environment variable ${key} does not match required pattern ${regex}, got '${parsed}'`);
+        errors.push(`Environment variable ${key} does not match required pattern ${regex}`);
         continue;
       }
     }

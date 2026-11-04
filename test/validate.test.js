@@ -15,7 +15,7 @@ test('validateEnv: enum invalid value throws', () => {
   const schema = { MODE: { type: 'string', enum: ['development', 'production'], required: true } };
   const env = makeEnv({ MODE: 'staging' });
   assert.throws(() => validateEnv(schema, env), err =>
-    err instanceof ValidationError && err.message.includes('must be one of')
+    err instanceof ValidationError && err.message.includes('configured values')
   );
 });
 
@@ -86,7 +86,7 @@ test('validateEnv: default respects enum and pattern', () => {
 test('validateEnv: invalid defaults fail enum, pattern, and type validation', () => {
   assert.throws(
     () => validateEnv({ MODE: { type: 'string', enum: ['dev'], default: 'staging' } }, {}),
-    (err) => err instanceof ValidationError && err.message.includes('must be one of')
+    (err) => err instanceof ValidationError && err.message.includes('configured values')
   );
 
   assert.throws(
@@ -163,6 +163,51 @@ test('validateEnv: custom environment object works', () => {
   const customEnv = { APP_NAME: 'custom-app' };
   const cfg = validateEnv(schema, customEnv);
   assert.equal(cfg.APP_NAME, 'custom-app');
+});
+
+test('validateEnv: empty schemas and optional variables are valid', () => {
+  assert.deepEqual(validateEnv({}, {}), {});
+
+  const cfg = validateEnv({
+    OPTIONAL: { type: 'string' },
+    WITH_DEFAULT: { type: 'number', default: 3000 },
+    EMPTY_WITH_DEFAULT: { type: 'string', default: 'fallback' },
+  }, { EMPTY_WITH_DEFAULT: '' });
+
+  assert.equal(Object.hasOwn(cfg, 'OPTIONAL'), false);
+  assert.equal(cfg.WITH_DEFAULT, 3000);
+  assert.equal(cfg.EMPTY_WITH_DEFAULT, 'fallback');
+});
+
+test('validateEnv: malformed schemas throw ValidationError', () => {
+  assert.throws(() => validateEnv(null, {}), err =>
+    err instanceof ValidationError && err.message.includes('schema must be an object')
+  );
+
+  assert.throws(() => validateEnv({ TOKEN: null }, {}), err =>
+    err instanceof ValidationError && err.message.includes('Invalid validation rule for variable TOKEN')
+  );
+});
+
+test('validateEnv: validation errors never expose environment values', () => {
+  const secret = 'private-sentinel-value';
+  const invalidCases = [
+    { type: 'number' },
+    { type: 'boolean' },
+    { type: 'url' },
+    { type: 'string', enum: ['expected'] },
+    { type: 'string', pattern: /^expected$/ },
+  ];
+
+  for (const rule of invalidCases) {
+    assert.throws(() => validateEnv({ TOKEN: rule }, { TOKEN: secret }), err => {
+      assert.ok(err instanceof ValidationError);
+      assert.equal(err.message.includes(secret), false);
+      assert.equal(err.messages.join(' ').includes(secret), false);
+      assert.equal(err.stack.includes(secret), false);
+      return true;
+    });
+  }
 });
 
 // Multiple configuration errors – ensure first missing required triggers
