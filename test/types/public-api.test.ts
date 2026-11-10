@@ -22,7 +22,7 @@ const loadWithOptions = load({
   strictKeys: false,
   processEnv: customEnv
 });
-const configResult = config({ processEnv: customEnv });
+const configResult = config({ processEnv: customEnv, silent: true });
 
 const settings = validateEnv({
   PORT: { type: 'number', required: true },

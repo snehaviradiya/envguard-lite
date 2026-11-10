@@ -24,15 +24,24 @@
     "variables",
     "validation"
   ],
+  "author": "Sneha Viradiya",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snehaviradiya/envguard-lite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/snehaviradiya/envguard-lite/issues"
+  },
+  "homepage": "https://github.com/snehaviradiya/envguard-lite#readme",
   "files": [
     "src/**/*.js",
     "src/**/*.d.ts",
     "examples",
     "README.md",
+    "LICENSE",
     "package.json"
   ],
-  "author": "",
-  "license": "MIT",
   "engines": {
     "node": ">=18"
   },

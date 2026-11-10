@@ -1,6 +1,11 @@
 # envguard-lite
 
-A zero-runtime-dependency environment variable parser, loader, and validator for Node.js (>= 18). The package is ESM and includes TypeScript declarations.
+[![CI](https://github.com/snehaviradiya/envguard-lite/actions/workflows/ci.yml/badge.svg)](https://github.com/snehaviradiya/envguard-lite/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+A zero-runtime-dependency environment variable parser, loader, and validator for Node.js (>= 18). Built with standard ESM architecture, native URL validation, regular expression patterns, safe error aggregation, and TypeScript declarations.
+
+Repository: [https://github.com/snehaviradiya/envguard-lite](https://github.com/snehaviradiya/envguard-lite)
 
 ## Installation
 
@@ -85,6 +90,12 @@ try {
 - `pattern`: a regular expression or regex string, checked against the string form of the parsed value and defaults.
 
 Validation errors are aggregated where possible. `ValidationError.messages` contains individual messages identifying the variable and issue without echoing supplied environment values. The example handles failures with a generic message as an additional precaution.
+
+## Security
+
+- **Secret Redaction**: Validation error messages identify invalid variable keys and expected constraints, but never echo raw environment values. This prevents sensitive credentials (such as API tokens, database connection strings, and passwords) from leaking into console logs, exception handlers, or APM monitoring tools.
+- **Zero Runtime Dependencies**: The library contains zero third-party runtime dependencies, eliminating external supply-chain vulnerabilities.
+- **Safe Regular Expression Evaluation**: Regex pattern compilation errors are caught and surfaced safely within `ValidationError` rather than crashing the process unhandled.
 
 ## Integration example
 
