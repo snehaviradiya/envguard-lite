@@ -130,16 +130,30 @@ test('validateEnv: default value applied when variable missing', () => {
 });
 
 test('validateEnv: valid number parsing', () => {
-  const schema = { PORT: { type: 'number', required: true } };
-  const env = makeEnv({ PORT: '8080' });
+  const schema = {
+    PORT: { type: 'number', required: true },
+    FLOAT: { type: 'number', required: true },
+    NEGATIVE: { type: 'number', required: true },
+    SCIENTIFIC: { type: 'number', required: true }
+  };
+  const env = makeEnv({
+    PORT: '8080',
+    FLOAT: '3.14159',
+    NEGATIVE: '-42',
+    SCIENTIFIC: '1e4'
+  });
   const cfg = validateEnv(schema, env);
   assert.equal(cfg.PORT, 8080);
+  assert.equal(cfg.FLOAT, 3.14159);
+  assert.equal(cfg.NEGATIVE, -42);
+  assert.equal(cfg.SCIENTIFIC, 10000);
 });
 
 test('validateEnv: invalid number throws ValidationError', () => {
   const schema = { PORT: { type: 'number', required: true } };
-  const env = makeEnv({ PORT: 'not-a-number' });
-  assert.throws(() => validateEnv(schema, env), (err) => err instanceof ValidationError && err.message.includes('must be a valid number'));
+  assert.throws(() => validateEnv(schema, makeEnv({ PORT: 'not-a-number' })), (err) => err instanceof ValidationError && err.message.includes('must be a valid number'));
+  assert.throws(() => validateEnv(schema, makeEnv({ PORT: '   ' })), (err) => err instanceof ValidationError && err.message.includes('must be a valid number'));
+  assert.throws(() => validateEnv(schema, makeEnv({ PORT: '\t\n' })), (err) => err instanceof ValidationError && err.message.includes('must be a valid number'));
 });
 
 test('validateEnv: accepted boolean true/false strings', () => {

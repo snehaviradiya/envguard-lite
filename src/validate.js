@@ -79,6 +79,9 @@ export function validateEnv(schema, env = process.env) {
             parsed = String(raw);
             break;
           case 'number': {
+            if (typeof raw === 'string' && raw.trim() === '') {
+              throw new ValidationError(`Environment variable ${key} must be a valid number`);
+            }
             const num = Number(raw);
             if (Number.isNaN(num)) {
               throw new ValidationError(`Environment variable ${key} must be a valid number`);
