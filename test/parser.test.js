@@ -337,3 +337,11 @@ second line" invalid_trailing
   );
 });
 
+test('parse: handles input with UTF-8 byte order mark (BOM)', () => {
+  const input = '\uFEFFAPP_ENV=production\nAPP_PORT=3000';
+  const result = parse(input);
+  assert.deepEqual(result, {
+    APP_ENV: 'production',
+    APP_PORT: '3000'
+  });
+});

@@ -71,6 +71,8 @@ export function parse(src, options = {}) {
     throw new TypeError(`Expected input to be a string or Buffer, received ${src === null ? 'null' : typeof src}`);
   }
 
+  content = content.replace(/^\uFEFF/, '');
+
   const result = {};
   // Normalize Windows CRLF to LF, then split into lines
   const lines = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
