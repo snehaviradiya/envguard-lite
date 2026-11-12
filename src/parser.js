@@ -175,7 +175,12 @@ export function parse(src, options = {}) {
 
     // Empty value
     if (trimmedVal.length === 0) {
-      result[rawKey] = '';
+      Object.defineProperty(result, rawKey, {
+        value: '',
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
       continue;
     }
 

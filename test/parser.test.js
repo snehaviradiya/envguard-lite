@@ -192,11 +192,11 @@ KEY=second
 });
 
 test('parse: preserves special object property names as environment keys', () => {
-  const result = parse('__proto__=first\n__proto__=last\nconstructor=value\ntoString=method');
+  const result = parse('__proto__=first\n__proto__=last\n__proto__=\nconstructor=value\ntoString=method');
 
   assert.equal(Object.getPrototypeOf(result), Object.prototype);
   assert.equal(Object.hasOwn(result, '__proto__'), true);
-  assert.equal(result.__proto__, 'last');
+  assert.equal(result.__proto__, '');
   assert.equal(result.constructor, 'value');
   assert.equal(result.toString, 'method');
 });
