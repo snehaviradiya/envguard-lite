@@ -2,7 +2,7 @@
 
 import { createServer } from 'node:http';
 import { fileURLToPath } from 'node:url';
-import envguard from 'envguard-lite';
+import envguard from '@snehav27/envguard-lite';
 
 const { load, validateEnv, ValidationError } = envguard;
 
@@ -11,7 +11,7 @@ load({
   silent: true
 });
 
-/** @satisfies {import('envguard-lite').ValidationSchema} */
+/** @satisfies {import('@snehav27/envguard-lite').ValidationSchema} */
 const schema = {
   SERVICE_NAME: { type: 'string', required: true },
   PORT: { type: 'number', default: 3000 },

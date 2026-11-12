@@ -7,8 +7,8 @@ import envguard, {
   ParseError,
   ValidationError,
   validateEnv
-} from 'envguard-lite';
-import type { Environment } from 'envguard-lite';
+} from '@snehav27/envguard-lite';
+import type { Environment } from '@snehav27/envguard-lite';
 
 const parsed: Record<string, string> = parse('PORT=3000');
 const parsedBuffer: Record<string, string> = parse(Buffer.from('PORT=3000'), { strictKeys: false });

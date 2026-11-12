@@ -10,7 +10,7 @@ test('package.json: manifest configuration and exports integrity', () => {
   const pkgPath = path.join(rootDir, 'package.json');
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
 
-  assert.equal(pkg.name, 'envguard-lite');
+  assert.equal(pkg.name, '@snehav27/envguard-lite');
   assert.equal(pkg.version, '0.1.0');
   assert.equal(pkg.type, 'module');
   assert.equal(pkg.license, 'MIT');

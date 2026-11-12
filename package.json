@@ -1,5 +1,5 @@
 {
-  "name": "envguard-lite",
+  "name": "@snehav27/envguard-lite",
   "version": "0.1.0",
   "description": "A lightweight, beginner-friendly Node.js utility package for validating environment variables and providing clear configuration errors.",
   "type": "module",

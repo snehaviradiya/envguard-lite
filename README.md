@@ -10,7 +10,7 @@ Repository: [https://github.com/snehaviradiya/envguard-lite](https://github.com/
 ## Installation
 
 ```bash
-npm install envguard-lite
+npm install @snehav27/envguard-lite
 ```
 
 For TypeScript projects, use a supported TypeScript version and install Node.js type declarations if your project does not already provide them:
@@ -22,7 +22,7 @@ npm install --save-dev typescript @types/node
 ## JavaScript usage
 
 ```js
-import { load, validateEnv, ValidationError } from 'envguard-lite';
+import { load, validateEnv, ValidationError } from '@snehav27/envguard-lite';
 
 load(); // Reads .env from the current working directory without overwriting existing variables.
 
@@ -48,7 +48,7 @@ try {
 Declarations are resolved from the package's root ESM export. Both named and default imports are supported:
 
 ```ts
-import envguard, { load, validateEnv, ValidationError } from 'envguard-lite';
+import envguard, { load, validateEnv, ValidationError } from '@snehav27/envguard-lite';
 
 load();
 
