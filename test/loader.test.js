@@ -27,6 +27,22 @@ test('load: reads basic env fixture into custom env object', () => {
   assert.deepEqual(result.loaded, result.parsed);
 });
 
+test('load: preserves __proto__ as an environment property', () => {
+  const targetEnv = {};
+  const filePath = path.join(fixturesDir, '.env.special-keys');
+
+  const result = load({ path: filePath, processEnv: targetEnv });
+
+  assert.equal(Object.getPrototypeOf(result.parsed), Object.prototype);
+  assert.equal(Object.hasOwn(result.parsed, '__proto__'), true);
+  assert.equal(Object.hasOwn(result.loaded, '__proto__'), true);
+  assert.equal(Object.hasOwn(targetEnv, '__proto__'), true);
+  assert.equal(result.parsed.__proto__, 'configured');
+  assert.equal(result.loaded.__proto__, 'configured');
+  assert.equal(targetEnv.__proto__, 'configured');
+  assert.equal(Object.getPrototypeOf(targetEnv), Object.prototype);
+});
+
 test('load: does NOT overwrite existing env values by default (override: false)', () => {
   const targetEnv = {
     PORT: '4000',

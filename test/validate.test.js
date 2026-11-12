@@ -179,6 +179,17 @@ test('validateEnv: custom environment object works', () => {
   assert.equal(cfg.APP_NAME, 'custom-app');
 });
 
+test('validateEnv: preserves __proto__ as a validated property', () => {
+  const cfg = validateEnv(
+    { ['__proto__']: { type: 'string', required: true } },
+    { ['__proto__']: 'configured' }
+  );
+
+  assert.equal(Object.getPrototypeOf(cfg), Object.prototype);
+  assert.equal(Object.hasOwn(cfg, '__proto__'), true);
+  assert.equal(cfg.__proto__, 'configured');
+});
+
 test('validateEnv: empty schemas and optional variables are valid', () => {
   assert.deepEqual(validateEnv({}, {}), {});
 

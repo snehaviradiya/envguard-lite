@@ -138,7 +138,12 @@ export function validateEnv(schema, env = process.env) {
       }
     }
 
-    result[key] = parsed;
+    Object.defineProperty(result, key, {
+      value: parsed,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
   }
 
   if (errors.length > 0) {

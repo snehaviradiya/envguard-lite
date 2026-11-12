@@ -91,8 +91,18 @@ export function load(options = {}) {
     const isAlreadySet = Object.prototype.hasOwnProperty.call(processEnv, key) && processEnv[key] !== undefined;
 
     if (override || !isAlreadySet) {
-      processEnv[key] = value;
-      loaded[key] = value;
+      Object.defineProperty(processEnv, key, {
+        value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+      Object.defineProperty(loaded, key, {
+        value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
     }
   }
 

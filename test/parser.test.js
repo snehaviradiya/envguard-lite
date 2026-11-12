@@ -191,6 +191,16 @@ KEY=second
   });
 });
 
+test('parse: preserves special object property names as environment keys', () => {
+  const result = parse('__proto__=first\n__proto__=last\nconstructor=value\ntoString=method');
+
+  assert.equal(Object.getPrototypeOf(result), Object.prototype);
+  assert.equal(Object.hasOwn(result, '__proto__'), true);
+  assert.equal(result.__proto__, 'last');
+  assert.equal(result.constructor, 'value');
+  assert.equal(result.toString, 'method');
+});
+
 // Error handling tests
 
 test('parse: throws TypeError when input is not a string or Buffer', () => {
@@ -222,6 +232,24 @@ ANOTHER=valid
       return true;
     }
   );
+});
+
+test('parse: does not expose malformed source text in errors', () => {
+  const secret = 'parser-secret-sentinel';
+  const inputs = [
+    `TOKEN ${secret}`,
+    `TOKEN="valid" ${secret}`,
+    `TOKEN="${secret}`
+  ];
+
+  for (const input of inputs) {
+    assert.throws(() => parse(input), (err) => {
+      assert.equal(err instanceof ParseError, true);
+      assert.equal(err.message.includes(secret), false);
+      assert.equal(err.rawLine, undefined);
+      return true;
+    });
+  }
 });
 
 test('parse: throws ParseError when variable key is empty', () => {

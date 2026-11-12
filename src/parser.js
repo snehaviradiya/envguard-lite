@@ -100,8 +100,8 @@ export function parse(src, options = {}) {
 
       if (remainder.length > 0 && !remainder.startsWith('#')) {
         throw new ParseError(
-          `Unexpected characters after closing quote: '${remainder}'`,
-          { line: lineNumber, rawLine }
+          'Unexpected characters after closing quote',
+          { line: lineNumber }
         );
       }
 
@@ -112,7 +112,12 @@ export function parse(src, options = {}) {
         parsedValue = parsedValue.replace(/\\'/g, "'");
       }
 
-      result[key] = parsedValue;
+      Object.defineProperty(result, key, {
+        value: parsedValue,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
       multilineState = null;
       continue;
     }
@@ -139,8 +144,8 @@ export function parse(src, options = {}) {
     const delimiterIndex = lineToParse.indexOf('=');
     if (delimiterIndex === -1) {
       throw new ParseError(
-        `Missing '=' delimiter in assignment: '${rawLine.trim()}'`,
-        { line: lineNumber, rawLine }
+        "Missing '=' delimiter in assignment",
+        { line: lineNumber }
       );
     }
 
@@ -150,20 +155,18 @@ export function parse(src, options = {}) {
     // Validate key
     if (rawKey.length === 0) {
       throw new ParseError('Empty variable key in assignment', {
-        line: lineNumber,
-        rawLine
+        line: lineNumber
       });
     }
 
     if (strictKeys && !VALID_KEY_REGEX.test(rawKey)) {
       throw new ParseError(
         `Invalid variable key '${rawKey}'. Keys must start with a letter or underscore and contain only alphanumeric characters or underscores.`,
-        { line: lineNumber, rawLine }
+        { line: lineNumber }
       );
     } else if (!strictKeys && /\s/.test(rawKey)) {
       throw new ParseError(`Invalid variable key '${rawKey}'. Keys cannot contain whitespace.`, {
-        line: lineNumber,
-        rawLine
+        line: lineNumber
       });
     }
 
@@ -201,8 +204,8 @@ export function parse(src, options = {}) {
 
       if (remainder.length > 0 && !remainder.startsWith('#')) {
         throw new ParseError(
-          `Unexpected characters after closing quote: '${remainder}'`,
-          { line: lineNumber, rawLine }
+          'Unexpected characters after closing quote',
+          { line: lineNumber }
         );
       }
 
@@ -213,7 +216,12 @@ export function parse(src, options = {}) {
         parsedValue = parsedValue.replace(/\\'/g, "'");
       }
 
-      result[rawKey] = parsedValue;
+      Object.defineProperty(result, rawKey, {
+        value: parsedValue,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
     } else {
       // Unquoted value: check for inline comment preceded by whitespace
       let finalValue = rawValue;
@@ -222,7 +230,12 @@ export function parse(src, options = {}) {
         finalValue = finalValue.slice(0, inlineCommentMatch);
       }
 
-      result[rawKey] = finalValue.trim();
+      Object.defineProperty(result, rawKey, {
+        value: finalValue.trim(),
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
     }
   }
 
