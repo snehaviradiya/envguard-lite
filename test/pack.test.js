@@ -43,3 +43,10 @@ test('package.json: files allowlist excludes development artifacts', () => {
     assert.ok(!pattern.includes('node_modules'), `Files pattern ${pattern} should not include node_modules`);
   }
 });
+
+test('package.json: does not declare a self-dependency', () => {
+  const pkgPath = path.join(rootDir, 'package.json');
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+
+  assert.ok(!pkg.dependencies || !pkg.dependencies['@snehav27/envguard-lite']);
+});
